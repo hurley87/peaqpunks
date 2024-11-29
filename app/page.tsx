@@ -1,28 +1,29 @@
 import { MintDialog } from '@/components/MintDialog';
 import { Button } from '@/components/ui/button';
+import { Text } from '@/components/ui/text';
 
 export default function Home() {
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen pb-20 gap-16 font-[family-name:var(--font-geist-sans)] w-full max-w-3xl mx-auto">
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <p className=" text-center sm:text-left font-[family-name:var(--font-geist-mono)] text-white text-lg">
+        <Text variant="mono" className="text-center sm:text-left">
           {`10,000 unique collectible characters with proof of ownership stored on
           the Ethereum blockchain. The project that inspired the modern
           CryptoArt movement. CryptoPunks are one of the earliest and most
-          iconic examples of "Non-Fungible Tokens” minted on Ethereum, and were
+          iconic examples of "Non-Fungible Tokens" minted on Ethereum, and were
           the inspiration for the ERC-721 standard which powers most digital art
           and collectibles on-chain. Since their release on June 23, 2017,
           CryptoPunks have been featured in numerous international publications,
-          headlined prestigious international auctions at both Christie’s and
-          Sotheby’s, and even entered the permanent collections of important art
+          headlined prestigious international auctions at both Christie's and
+          Sotheby's, and even entered the permanent collections of important art
           museums such as the ICA Miami, the Centre Pompidou, and the LACMA. For
           more information and updates, check out the CryptoPunks brand hub.`}
-        </p>
+        </Text>
         <div className="flex gap-4 items-center flex-col sm:flex-row">
           <MintDialog />
           <Button variant="outline">Learn more</Button>
         </div>
-        <p className=" text-center sm:text-left font-[family-name:var(--font-geist-mono)] text-white text-lg">
+        <Text variant="mono" className="text-center sm:text-left">
           {`CryptoPunks are 10,000 uniquely generated characters. No two are
           exactly alike, and each one can be trustlessly collected by anyone
           interacting with the Ethereum blockchain. Originally, Punks could be
@@ -35,7 +36,7 @@ export default function Home() {
           sale and have no current bids. Punks with a red background are
           available for sale by their owner. Finally, Punks with a purple
           background have an active bid on them.`}
-        </p>
+        </Text>
       </main>
       <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
         <a
