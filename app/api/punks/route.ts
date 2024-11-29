@@ -1,5 +1,8 @@
 import { NextResponse } from 'next/server';
-import { createPublicClient, http, decodeFunctionData, createWalletClient } from "viem";
+import { createPublicClient, http, 
+  // decodeFunctionData, 
+  // createWalletClient 
+} from "viem";
 import { privateKeyToAccount } from 'viem/accounts';
 import { baseSepolia } from 'viem/chains';
 
@@ -10,10 +13,10 @@ const publicClient = createPublicClient({
   transport: http(RPC_URL),
 });
 
-const walletClient = createWalletClient({
-  chain: baseSepolia,
-  transport: http(RPC_URL),
-});
+// const walletClient = createWalletClient({
+//   chain: baseSepolia,
+//   transport: http(RPC_URL),
+// });
 
 export async function GET() {
 
@@ -662,16 +665,16 @@ export async function GET() {
 
     
         // Add to allowlist
-        const { request }: any = await publicClient.simulateContract({
-            account,
-            address: '0x4262D81b1bC67a5902aeBfab15f91ca6Aa4B819A',
-            abi,
-            functionName: 'mint',
-            args: ['0xbD78783a26252bAf756e22f0DE764dfDcDa7733c', 1, 1, '0x'],
-            value: BigInt(11100000000000),
-        });
+        // const { request }: any = await publicClient.simulateContract({
+        //     account,
+        //     address: '0x4262D81b1bC67a5902aeBfab15f91ca6Aa4B819A',
+        //     abi,
+        //     functionName: 'mint',
+        //     args: ['0xbD78783a26252bAf756e22f0DE764dfDcDa7733c', 1, 1, '0x'],
+        //     value: BigInt(11100000000000),
+        // });
     
-        await walletClient.writeContract(request);
+        // await walletClient.writeContract(request);
 
 
 
