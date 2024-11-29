@@ -44,7 +44,7 @@ const Header = () => {
                 >
                   <Text
                     variant="mono"
-                    className="text-center text-black text-sm w-fit mx-auto"
+                    className="text-center text-black text-sm w-fit mx`"
                   >
                     Disconnect
                   </Text>
