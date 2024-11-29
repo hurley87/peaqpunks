@@ -6,13 +6,14 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "./Counters.sol";
 import "base64-sol/base64.sol";
 import "./Strings.sol";
+import "@openzeppelin/contracts/utils/Pausable.sol";
 
 interface CryptopunksData {
   function punkImageSvg(uint16 index) external view returns (string memory svg);
   function punkAttributes(uint16 index) external view returns (string memory attributes);
 }
 
-contract PeaqPunks is ERC721, Ownable {
+contract PeaqPunks is ERC721, Ownable, Pausable {
   using Counters for Counters.Counter;
   Counters.Counter private tokenIdCounter;
   using strings for *;
@@ -29,13 +30,19 @@ contract PeaqPunks is ERC721, Ownable {
     punksDataAddress = _punksDataAddress;
   }
 
-  function mint() external payable returns (uint256) {
-    require(tokenIdCounter.current() <= 10000, "Maximum value reached.");
-    uint256 _tokenId = tokenIdCounter.current();
-    _safeMint(msg.sender, _tokenId);
-    tokenIdCounter.increment();
-    emit Mint(msg.sender, _tokenId);
-    return _tokenId;
+  function mint(uint256 numberOfTokens) external payable whenNotPaused returns (uint256[] memory) {
+    require(numberOfTokens > 0 && numberOfTokens <= 5, "Can only mint between 1 and 5 tokens at a time.");
+    require(tokenIdCounter.current() + numberOfTokens <= 10000, "Maximum value reached.");
+
+    uint256[] memory mintedTokenIds = new uint256[](numberOfTokens);
+    for (uint256 i = 0; i < numberOfTokens; i++) {
+        uint256 _tokenId = tokenIdCounter.current();
+        _safeMint(msg.sender, _tokenId);
+        tokenIdCounter.increment();
+        mintedTokenIds[i] = _tokenId;
+        emit Mint(msg.sender, _tokenId);
+    }
+    return mintedTokenIds;
   }
 
   function tokenURI(uint256 tokenId) public view override returns (string memory) {
@@ -90,6 +97,18 @@ contract PeaqPunks is ERC721, Ownable {
       value /= 10;
     }
     return string(buffer);
+  }
+
+  function pause() public onlyOwner {
+    _pause();
+  }
+
+  function unpause() public onlyOwner {
+    _unpause();
+  }
+
+  function totalMinted() public view returns (uint256) {
+    return tokenIdCounter.current();
   }
 
 }
