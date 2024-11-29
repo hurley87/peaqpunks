@@ -45,7 +45,10 @@ export default function Home() {
         </div>
         <div className="grid grid-cols-4 gap-4">
           {Array.from({ length: 8 }).map((_, i) => (
-            <div className="bg-primary rounded-lg w-44 h-56 shadow-lg z-10"></div>
+            <div
+              key={`${i}-${_}`}
+              className="bg-primary rounded-lg w-44 h-56 shadow-lg z-10"
+            ></div>
           ))}
         </div>
         <Accordion id="questions" type="single" collapsible className="w-full">
@@ -79,7 +82,7 @@ export default function Home() {
               </Text>
             </AccordionContent>
           </AccordionItem>
-          <AccordionItem value="item-1">
+          <AccordionItem value="item-4">
             <AccordionTrigger>
               <Text>Is it accessible?</Text>
             </AccordionTrigger>
@@ -87,7 +90,7 @@ export default function Home() {
               <Text>Yes. It adheres to the WAI-ARIA design pattern.</Text>
             </AccordionContent>
           </AccordionItem>
-          <AccordionItem value="item-2">
+          <AccordionItem value="item-5">
             <AccordionTrigger>
               <Text>Is it styled?</Text>
             </AccordionTrigger>
@@ -98,7 +101,7 @@ export default function Home() {
               </Text>
             </AccordionContent>
           </AccordionItem>
-          <AccordionItem value="item-3">
+          <AccordionItem value="item-6">
             <AccordionTrigger>
               <Text>Is it animated?</Text>
             </AccordionTrigger>
