@@ -17,6 +17,7 @@ import { publicClient } from '@/lib/publicClient';
 import { baseSepolia } from 'viem/chains';
 import { createWalletClient } from 'viem';
 import { punksAddress, punksAbi } from '@/lib/PeaqPunks';
+import { toast } from 'sonner';
 
 const MINT_PRICE = 0.0000111;
 const VALID_CHAIN_ID = '84532';
@@ -65,8 +66,11 @@ export function MintDialog() {
         hash,
       });
 
+      toast.success('Minted successfully');
+
       console.log('Minted', hash);
     } catch (error) {
+      toast.error('Minting failed');
       console.log('error', error);
     } finally {
       setIsMinting(false);

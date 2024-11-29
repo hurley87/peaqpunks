@@ -16,7 +16,7 @@ const Header = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
       <div className="max-w-3xl mx-auto py-4 sm:py-6 lg:py-8 bg-[#2f1d74]">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center">
           <div className="flex-shrink-0">
             <Link
               href="/"
@@ -28,9 +28,9 @@ const Header = () => {
           {!ready ? null : user ? (
             <DropdownMenu>
               <DropdownMenuTrigger>
-                <Button variant="ghost">
+                <Text variant="mono" className="text-right">
                   {address.slice(0, 6)}...{address.slice(-4)}
-                </Button>
+                </Text>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 {/* <DropdownMenuItem asChild>
@@ -38,8 +38,16 @@ const Header = () => {
                     Profile
                   </Link>
                 </DropdownMenuItem> */}
-                <DropdownMenuItem className="cursor-pointer" onSelect={logout}>
-                  Disconnect
+                <DropdownMenuItem
+                  className="cursor-pointer text-center"
+                  onSelect={logout}
+                >
+                  <Text
+                    variant="mono"
+                    className="text-center text-black text-sm w-fit mx-auto"
+                  >
+                    Disconnect
+                  </Text>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
