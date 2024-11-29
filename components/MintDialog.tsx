@@ -18,7 +18,7 @@ import { baseSepolia } from 'viem/chains';
 import { createWalletClient } from 'viem';
 import { punksAddress, punksAbi } from '@/lib/PeaqPunks';
 
-const MINT_PRICE = 0.0000111; // ETH
+const MINT_PRICE = 0.0000111;
 const VALID_CHAIN_ID = '84532';
 
 export function MintDialog() {
@@ -42,7 +42,7 @@ export function MintDialog() {
     console.log('Minting...');
 
     try {
-      const ethereumProvider = (await wallet?.getEthereumProvider()) as any;
+      const ethereumProvider = await wallet?.getEthereumProvider();
 
       const walletClient = await createWalletClient({
         account: address,
@@ -50,7 +50,7 @@ export function MintDialog() {
         transport: custom(ethereumProvider),
       });
 
-      const { request }: any = await publicClient.simulateContract({
+      const { request } = await publicClient.simulateContract({
         address: punksAddress,
         abi: punksAbi,
         functionName: 'mint',
@@ -73,14 +73,12 @@ export function MintDialog() {
     }
   };
 
+  if (!user) return <Button onClick={() => login()}>Connect Wallet</Button>;
+
   return (
     <Dialog>
       <DialogTrigger asChild>
-        {user ? (
-          <Button>Mint now</Button>
-        ) : (
-          <Button onClick={() => login()}>Connect Wallet</Button>
-        )}
+        <Button>Mint now</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
