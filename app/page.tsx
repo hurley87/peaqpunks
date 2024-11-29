@@ -1,6 +1,5 @@
 'use client';
 import { MintDialog } from '@/components/MintDialog';
-import { Button } from '@/components/ui/button';
 import {
   Accordion,
   AccordionContent,
@@ -8,19 +7,8 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Text } from '@/components/ui/text';
-import { useCallback } from 'react';
 
 export default function Home() {
-  const scrollToQuestions = useCallback(() => {
-    const element = document.getElementById('questions');
-    if (element) {
-      element.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      });
-    }
-  }, []);
-
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen pb-20 gap-16 font-[family-name:var(--font-geist-sans)] w-full max-w-3xl mx-auto">
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
@@ -39,9 +27,6 @@ export default function Home() {
         </p>
         <div className="flex gap-4 items-center flex-col sm:flex-row">
           <MintDialog />
-          <Button variant="outline" onClick={scrollToQuestions}>
-            Learn more
-          </Button>
         </div>
         <div className="grid grid-cols-4 gap-4">
           {Array.from({ length: 8 }).map((_, i) => (
