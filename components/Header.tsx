@@ -12,7 +12,7 @@ import { Text } from './ui/text';
 const Header = () => {
   const { user, login, ready, logout } = usePrivy();
   const address = user?.wallet?.address as `0x${string}`;
-  ``;
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
       <div className="max-w-3xl mx-auto py-4 sm:py-6 lg:py-8 bg-[#2f1d74]">
