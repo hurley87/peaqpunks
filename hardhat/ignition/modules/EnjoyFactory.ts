@@ -1,9 +1,9 @@
-import { buildModule } from '@nomicfoundation/hardhat-ignition/modules';
+// import { buildModule } from '@nomicfoundation/hardhat-ignition/modules';
 
-const EnjoyFactoryModule = buildModule('EnjoyFactoryModule', (m) => {
-  const enjoyFactory = m.contract('EnjoyFactory', []);
+// const EnjoyFactoryModule = buildModule('EnjoyFactoryModule', (m) => {
+//   const enjoyFactory = m.contract('EnjoyFactory', []);
 
-  return { enjoyFactory };
-});
+//   return { enjoyFactory };
+// });
 
-export default EnjoyFactoryModule;
+// export default EnjoyFactoryModule;
