@@ -1,12 +1,11 @@
 import Link from 'next/link';
 import { isAddress } from 'viem';
 
-interface ProfilePageProps {
+type ProfilePageProps = {
   params: {
     address: string;
   };
-  searchParams: { [key: string]: string | string[] | undefined };
-}
+};
 
 export default async function ProfilePage({ params }: ProfilePageProps) {
   const address = params.address as `0x${string}`;
