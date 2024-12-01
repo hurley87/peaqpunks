@@ -8,9 +8,10 @@ type ProfilePageProps = {
 };
 
 export default async function ProfilePage({ params }: ProfilePageProps) {
-  const address = params?.address.toString() as `0x${string}`;
+  const { address } = await params;
+  const addressAs0x = address as `0x${string}`;
 
-  if (!isAddress(address)) {
+  if (!isAddress(addressAs0x)) {
     return (
       <div>
         Profile not found. <Link href="/">Go back</Link>
@@ -20,7 +21,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
 
   return (
     <div className="w-full max-w-lg mx-auto flex flex-col gap-4 text-white pt-20">
-      hey: {address}
+      hey: {addressAs0x}
     </div>
   );
 }
