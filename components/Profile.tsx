@@ -23,7 +23,7 @@ const Profile = () => {
       {ownedTokens.length > 0 ? (
         <Text>You own {ownedTokens.length} PeaqPunks</Text>
       ) : (
-        <Text>You don't own any PeaqPunks</Text>
+        <Text>{`You don't own any PeaqPunks`}</Text>
       )}
       <div className="flex flex-wrap gap-4">
         {ownedTokens.map((tokenId) => (
