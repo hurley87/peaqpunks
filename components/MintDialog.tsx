@@ -20,6 +20,7 @@ import { punksAddress, punksAbi } from '@/lib/PeaqPunks';
 import { toast } from 'sonner';
 import { usePaused } from '@/hooks/usePaused';
 import { useTotalMinted } from '@/hooks/useTotalMinted';
+import { useRouter } from 'next/navigation';
 
 const MINT_PRICE = 0.0000111;
 const VALID_CHAIN_ID = '84532';
@@ -35,6 +36,7 @@ export function MintDialog() {
   const address = wallet?.address as `0x${string}`;
   const { isPaused } = usePaused();
   const { totalMinted } = useTotalMinted();
+  const router = useRouter();
 
   console.log('isPaused', isPaused);
   console.log('totalMinted', totalMinted);
@@ -74,7 +76,7 @@ export function MintDialog() {
 
       toast.success('Minted successfully');
 
-      console.log('Minted', hash);
+      router.push('/profile');
     } catch (error) {
       toast.error('Minting failed');
       console.log('error', error);
