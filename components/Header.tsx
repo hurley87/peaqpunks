@@ -34,7 +34,7 @@ const Header = () => {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem asChild>
-                  <Link className="cursor-pointer" href={`/${address}`}>
+                  <Link className="cursor-pointer" href={`/p/${address}`}>
                     Profile
                   </Link>
                 </DropdownMenuItem>
