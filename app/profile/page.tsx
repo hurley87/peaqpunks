@@ -1,3 +1,5 @@
+import Profile from '@/components/Profile';
+
 export default async function UpdatePage() {
-  return <div>hey</div>;
+  return <Profile />;
 }

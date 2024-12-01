@@ -111,4 +111,12 @@ contract PeaqPunks is ERC721, Ownable, Pausable {
     return tokenIdCounter.current();
   }
 
+  function withdraw() public onlyOwner {
+    uint256 balance = address(this).balance;
+    require(balance > 0, "No balance to withdraw");
+    
+    (bool success, ) = payable(owner()).call{value: balance}("");
+    require(success, "Withdrawal failed");
+  }
+
 }

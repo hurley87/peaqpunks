@@ -18,6 +18,8 @@ import { baseSepolia } from 'viem/chains';
 import { createWalletClient } from 'viem';
 import { punksAddress, punksAbi } from '@/lib/PeaqPunks';
 import { toast } from 'sonner';
+import { usePaused } from '@/hooks/usePaused';
+import { useTotalMinted } from '@/hooks/useTotalMinted';
 
 const MINT_PRICE = 0.0000111;
 const VALID_CHAIN_ID = '84532';
@@ -31,7 +33,11 @@ export function MintDialog() {
   const wallet = wallets[0];
   const chainId = wallet?.chainId?.split(':')[1];
   const address = wallet?.address as `0x${string}`;
+  const { isPaused } = usePaused();
+  const { totalMinted } = useTotalMinted();
 
+  console.log('isPaused', isPaused);
+  console.log('totalMinted', totalMinted);
   const switchNetwork = async () => {
     setIsSwitchingNetwork(true);
     await wallet?.switchChain(parseInt(VALID_CHAIN_ID));
@@ -79,10 +85,17 @@ export function MintDialog() {
 
   if (!user) return <Button onClick={() => login()}>Connect Wallet</Button>;
 
+  if (totalMinted >= 10000) return <Text>PeaqPunks sold out!</Text>;
+
+  if (isPaused) return <Button disabled>Minting is paused</Button>;
+
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button>Mint now</Button>
+        <div className="flex gap-4 items-center flex-col sm:flex-row">
+          <Button>Mint now</Button>
+          <Text>{totalMinted}/400</Text>
+        </div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
