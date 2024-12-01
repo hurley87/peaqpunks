@@ -33,21 +33,16 @@ const Header = () => {
                 </Text>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                {/* <DropdownMenuItem asChild>
-                  <Link className="cursor-pointer" href={`/profile/${address}`}>
+                <DropdownMenuItem asChild>
+                  <Link className="cursor-pointer" href={`/${address}`}>
                     Profile
                   </Link>
-                </DropdownMenuItem> */}
+                </DropdownMenuItem>
                 <DropdownMenuItem
                   className="cursor-pointer text-center"
                   onSelect={logout}
                 >
-                  <Text
-                    variant="mono"
-                    className="text-center text-black text-sm w-fit mx`"
-                  >
-                    Disconnect
-                  </Text>
+                  Disconnect
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

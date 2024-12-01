@@ -5,7 +5,7 @@ interface TextProps extends HTMLAttributes<HTMLParagraphElement> {
   variant?: 'mono' | 'sans';
 }
 
-export function Text({ className, variant = 'sans', ...props }: TextProps) {
+export function Text({ className, variant = 'mono', ...props }: TextProps) {
   return (
     <p
       className={cn(
