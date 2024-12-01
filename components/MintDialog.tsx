@@ -94,7 +94,7 @@ export function MintDialog() {
       <DialogTrigger asChild>
         <div className="flex gap-4 items-center flex-col sm:flex-row">
           <Button>Mint now</Button>
-          <Text>{totalMinted}/400</Text>
+          <Text>{totalMinted}/400 remaining today</Text>
         </div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
