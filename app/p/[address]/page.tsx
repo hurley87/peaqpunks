@@ -8,7 +8,7 @@ type ProfilePageProps = {
 };
 
 export default async function ProfilePage({ params }: ProfilePageProps) {
-  const address = params.address as `0x${string}`;
+  const address = params?.address.toString() as `0x${string}`;
 
   if (!isAddress(address)) {
     return (
