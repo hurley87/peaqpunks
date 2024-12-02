@@ -10,10 +10,11 @@ import { Text } from '@/components/ui/text';
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen pb-20 gap-16 font-[family-name:var(--font-geist-sans)] w-full max-w-3xl mx-auto">
+    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen pb-20 gap-16 font-[family-name:var(--font-geist-sans)] w-full">
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <p className=" text-center sm:text-left font-[family-name:var(--font-geist-mono)] text-white text-lg">
-          {`10,000 unique collectible characters with proof of ownership stored on
+        <div className="max-w-3xl mx-auto flex flex-col gap-8">
+          <p className=" text-center sm:text-left font-[family-name:var(--font-geist-mono)] text-white text-lg">
+            {`10,000 unique collectible characters with proof of ownership stored on
           the Ethereum blockchain. The project that inspired the modern
           CryptoArt movement. CryptoPunks are one of the earliest and most
           iconic examples of "Non-Fungible Tokens” minted on Ethereum, and were
@@ -24,19 +25,19 @@ export default function Home() {
           Sotheby’s, and even entered the permanent collections of important art
           museums such as the ICA Miami, the Centre Pompidou, and the LACMA. For
           more information and updates, check out the CryptoPunks brand hub.`}
-        </p>
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <MintDialog />
+          </p>
+          <div className="flex gap-4 items-center flex-col sm:flex-row">
+            <MintDialog />
+          </div>
         </div>
-        <div className="grid grid-cols-4 gap-4">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <div
-              key={`${i}-${_}`}
-              className="bg-primary rounded-lg w-44 h-56 shadow-lg z-10"
-            ></div>
-          ))}
-        </div>
-        <Accordion id="questions" type="single" collapsible className="w-full">
+        s
+        <img src="/banner.png" alt="PeaqPunks" className="w-full" />
+        <Accordion
+          id="questions"
+          type="single"
+          collapsible
+          className="w-full max-w-3xl mx-auto "
+        >
           <AccordionItem value="item-1">
             <AccordionTrigger>
               <Text>Is it accessible?</Text>

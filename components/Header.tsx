@@ -13,9 +13,12 @@ const Header = () => {
   const { user, login, ready, logout } = usePrivy();
   const address = user?.wallet?.address as `0x${string}`;
 
+  console.log('user', user);
+  console.log('ready', ready);
+
   return (
-    <header className="fixed top-0 left-0 right-0 z-50">
-      <div className="max-w-3xl mx-auto py-4 sm:py-6 lg:py-8 bg-[#2f1d74]">
+    <header className="fixed top-0 left-0 right-0 z-50 px-8 bg-[#2f1d74]">
+      <div className="py-4 sm:py-6 lg:py-8 ">
         <div className="flex justify-between items-center">
           <div className="flex-shrink-0">
             <Link
@@ -25,7 +28,7 @@ const Header = () => {
               PeaqPunks
             </Link>
           </div>
-          {!ready ? null : user ? (
+          {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger>
                 <Text variant="mono" className="text-right">
@@ -47,8 +50,8 @@ const Header = () => {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button variant="ghost" onClick={login}>
-              <Text variant="mono">Connect</Text>
+            <Button onClick={login}>
+              <Text variant="mono">Connect Wallet</Text>
             </Button>
           )}
         </div>
