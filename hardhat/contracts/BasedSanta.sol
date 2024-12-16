@@ -10,6 +10,8 @@ interface IERC20 {
 
 interface IERC721 {
     function safeTransferFrom(address from, address to, uint256 tokenId) external;
+    function setApprovalForAll(address operator, bool approved) external;
+    function isApprovedForAll(address owner, address operator) external view returns (bool);
 }
 
 // Modify contract declaration to inherit Ownable
@@ -32,10 +34,38 @@ contract BasedSanta is Ownable {
     // Add mapping to track received addresses
     mapping(address => bool) public hasReceivedPresent;
 
+    // Add mapping for allowlist
+    mapping(address => bool) public isAllowlisted;
+    
+    // Track number of presents received per address
+    mapping(address => uint256) public presentsReceived;
+    
+    // Add array to track allowlisted addresses
+    address[] public allowedAddresses;
+    
     event PresentCreated(uint256 presentId, address tokenAddress, uint256 amountOrTokenId, bool isERC20);
     event PresentSent(uint256 presentId, address to);
+    event AddedToAllowlist(address indexed account);
 
-    constructor() Ownable(msg.sender) {}
+    // Add state variable for pause
+    bool public secondGiftsPaused;
+    
+    // Add event for pause state changes
+    event SecondGiftsPauseStateChanged(bool isPaused);
+
+    constructor() Ownable(msg.sender) {
+        // Initialize allowlist with all addresses
+        address[4] memory allowlist = [
+            0x45db9d3457c2Cb05C4BFc7334a33ceE6e19d508F,
+            0x7606328c81514A19f70b3DA1535Fc819906d46Ab,
+            0xC14A874A16944A29843E860339E65d5ec44f8b30,
+            0xbD78783a26252bAf756e22f0DE764dfDcDa7733c
+        ];
+        
+        for(uint i = 0; i < allowlist.length; i++) {
+            isAllowlisted[allowlist[i]] = true;
+        }
+    }
 
     function createERC20Present(address tokenAddress, uint256 amount, string memory description) external onlyOwner {
         require(amount > 0, "Amount must be greater than zero");
@@ -52,6 +82,9 @@ contract BasedSanta is Ownable {
     }
 
     function createERC721Present(address tokenAddress, uint256 tokenId, string memory description) external onlyOwner {
+        IERC721 nft = IERC721(tokenAddress);
+        require(nft.isApprovedForAll(msg.sender, address(this)), "Contract must be approved to transfer NFT");
+        
         presents[presentCounter] = Present({
             tokenAddress: tokenAddress,
             amountOrTokenId: tokenId,
@@ -66,7 +99,13 @@ contract BasedSanta is Ownable {
     function sendNextPresent(address to) external onlyOwner {
         require(to != address(0), "Cannot send to the zero address");
         require(nextPresentIndex < presentCounter, "No unsent presents available");
-        require(!hasReceivedPresent[to], "Address has already received a present");
+        
+        // Check presents received count with pause check
+        require(
+            presentsReceived[to] < 1 || 
+            (isAllowlisted[to] && presentsReceived[to] < 2 && !secondGiftsPaused), 
+            "Address has reached present limit or second gifts are paused"
+        );
 
         // Find the next unsent present
         while (nextPresentIndex < presentCounter && presents[nextPresentIndex].sent) {
@@ -78,18 +117,15 @@ contract BasedSanta is Ownable {
         Present storage present = presents[nextPresentIndex];
 
         if (present.isERC20) {
-            // Transfer ERC20 tokens
             IERC20(present.tokenAddress).transfer(to, present.amountOrTokenId);
         } else {
-            // Update santa reference to owner()
-            IERC721(present.tokenAddress).safeTransferFrom(owner(), to, present.amountOrTokenId);
+            IERC721(present.tokenAddress).safeTransferFrom(address(this), to, present.amountOrTokenId);
         }
 
-        present.sent = true; // Mark the present as sent
-        hasReceivedPresent[to] = true; // Mark address as having received a present
+        present.sent = true;
+        presentsReceived[to]++; // Increment presents received count
         emit PresentSent(nextPresentIndex, to);
 
-        // Increment the index to point to the next potential unsent present
         nextPresentIndex++;
     }
 
@@ -108,4 +144,61 @@ contract BasedSanta is Ownable {
 
         return present.description;
     }
+
+    // Add withdrawal functions
+    function withdrawERC20(address tokenAddress, uint256 amount) external onlyOwner {
+        require(tokenAddress != address(0), "Invalid token address");
+        require(amount > 0, "Amount must be greater than zero");
+        IERC20(tokenAddress).transfer(owner(), amount);
+    }
+
+    function withdrawERC721(address tokenAddress, uint256 tokenId) external onlyOwner {
+        require(tokenAddress != address(0), "Invalid token address");
+        IERC721(tokenAddress).safeTransferFrom(address(this), owner(), tokenId);
+    }
+
+    // Optional: Add function to check if address can receive more presents
+    function canReceivePresent(address recipient) external view returns (bool) {
+        return presentsReceived[recipient] == 0 || 
+               (isAllowlisted[recipient] && presentsReceived[recipient] == 1 && !secondGiftsPaused);
+    }
+
+    // Add function to add addresses to allowlist
+    function addToAllowlist(address[] calldata addresses) external onlyOwner {
+        for(uint i = 0; i < addresses.length; i++) {
+            address account = addresses[i];
+            require(account != address(0), "Cannot add zero address");
+            
+            if (!isAllowlisted[account]) {  // Only if not already allowlisted
+                isAllowlisted[account] = true;
+                allowedAddresses.push(account);
+                emit AddedToAllowlist(account);
+            }
+        }
+    }
+
+    // Optional: Add function to remove addresses from allowlist
+    function removeFromAllowlist(address[] calldata addresses) external onlyOwner {
+        for(uint i = 0; i < addresses.length; i++) {
+            isAllowlisted[addresses[i]] = false;
+        }
+    }
+
+    // Add function to get all allowlisted addresses
+    function getAllowlist() external view returns (address[] memory) {
+        return allowedAddresses;
+    }
+
+    // Add pause/unpause functions
+    function pauseSecondGifts() external onlyOwner {
+        secondGiftsPaused = true;
+        emit SecondGiftsPauseStateChanged(true);
+    }
+
+    function unpauseSecondGifts() external onlyOwner {
+        secondGiftsPaused = false;
+        emit SecondGiftsPauseStateChanged(false);
+    }
 }
+
+

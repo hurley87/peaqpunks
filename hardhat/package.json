@@ -5,9 +5,11 @@
     "hardhat": "^2.22.16"
   },
   "dependencies": {
+    "@intrinsic-finance/swap-router-contracts": "^1.0.0",
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
     "@openzeppelin/contracts": "^5.1.0",
     "@uniswap/v3-periphery": "^1.4.4",
+    "@vinhtruong/swap-router-contracts": "^1.0.0",
     "base64-sol": "^1.1.0",
     "dotenv": "^16.4.5"
   }
