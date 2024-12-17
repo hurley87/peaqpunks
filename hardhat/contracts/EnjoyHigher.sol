@@ -8,12 +8,13 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {IWETH, ISwapRouter, INonfungiblePositionManager} from "./interfaces.sol";
 
 contract Enjoyr is ERC1155Supply, Ownable {
-    uint256 public constant MINT_FEE_SINGLE = 0.000111 ether;
+    uint256 public MINT_FEE = 0.0003 ether;
     uint256 public TOKEN_LIFESPAN;
     uint256 private tokenIdCounter;
     address public constant WETH = 0x4200000000000000000000000000000000000006;
     address public TOKEN;
-    address public constant ROUTER_ADDRESS = 0x2626664c2603336E57B271c5C0b26F421741e481;
+    address public constant ROUTER = 0x2626664c2603336E57B271c5C0b26F421741e481;
+    address public constant MULTSIG = 0x2E25fF59E7d52e36caF9743E04EFE55059919cfa;
     string public name;
     string public symbol;
 
@@ -26,7 +27,6 @@ contract Enjoyr is ERC1155Supply, Ownable {
     mapping(uint256 => address) private _tokenCreators;
     mapping(uint256 => TokenDetails) public tokenDetails;
     mapping(uint256 => uint256) public mintCount;
-    mapping(uint256 => uint256) public retainedFeesPerToken;
     mapping(uint256 => uint256) public burnedTokens;
     mapping(uint256 => uint256) public creatorFeesPerToken;
 
@@ -103,7 +103,7 @@ contract Enjoyr is ERC1155Supply, Ownable {
         // Check if token has expired
         require(block.timestamp <= details.creationTime + TOKEN_LIFESPAN, "Token has expired");
 
-        uint256 requiredFee = MINT_FEE_SINGLE * editions;
+        uint256 requiredFee = MINT_FEE * editions;
         require(msg.value == requiredFee, "Incorrect ETH sent");
 
         // Update mint count
@@ -114,14 +114,16 @@ contract Enjoyr is ERC1155Supply, Ownable {
         uint256 creatorAmount = (msg.value * 50) / 100; // 50% to creator
         uint256 retainedAmount = msg.value - burnAmount - creatorAmount; // 5% retained
 
-        // Track retained fees for this token
-        retainedFeesPerToken[tokenId] += retainedAmount;
+        // transfer 5% to multisig
+        (bool successMultisig, ) = payable(MULTSIG).call{value: retainedAmount}("");
+        require(successMultisig, "Multisig payment failed");
+
         // Track creator fees for this token
         creatorFeesPerToken[tokenId] += creatorAmount;
 
         // Replace transfer with call
-        (bool success, ) = payable(details.creatorAddress).call{value: creatorAmount}("");
-        require(success, "Creator payment failed");
+        (bool successCreator, ) = payable(details.creatorAddress).call{value: creatorAmount}("");
+        require(successCreator, "Creator payment failed");
 
         // Mint the tokens
         _mint(msg.sender, tokenId, editions, "");
@@ -154,9 +156,9 @@ contract Enjoyr is ERC1155Supply, Ownable {
             });
 
         IWETH(WETH).deposit{value: amountIn}();
-        IWETH(WETH).approve(address(ROUTER_ADDRESS), amountIn);
+        IWETH(WETH).approve(address(ROUTER), amountIn);
         
-        amountOut = ISwapRouter(ROUTER_ADDRESS).exactInputSingle(params);
+        amountOut = ISwapRouter(ROUTER).exactInputSingle(params);
 
         IERC20(TOKEN).transfer(address(0), amountOut);
         
@@ -227,13 +229,6 @@ contract Enjoyr is ERC1155Supply, Ownable {
         return mintCount[tokenId];
     }
 
-    /// @notice Returns the total retained fees for a specific token
-    /// @param tokenId The ID of the token
-    /// @return The amount of ETH retained as fees for this token
-    function getRetainedFees(uint256 tokenId) public view returns (uint256) {
-        return retainedFeesPerToken[tokenId];
-    }
-
     /// @notice Updates the token lifespan duration
     /// @param newLifespan The new lifespan duration in seconds
     /// @dev This function is only callable by the owner
@@ -254,6 +249,14 @@ contract Enjoyr is ERC1155Supply, Ownable {
     /// @return The amount of ETH paid to the creator for this tokenId
     function getCreatorFees(uint256 tokenId) public view returns (uint256) {
         return creatorFeesPerToken[tokenId];
+    }
+
+    /// @notice Updates the mint fee
+    /// @param newFee The new mint fee in wei
+    /// @dev This function is only callable by the owner
+    function updateMintFee(uint256 newFee) external onlyOwner {
+        require(newFee > 0, "Fee must be greater than 0");
+        MINT_FEE = newFee;
     }
 
     receive() external payable {}
